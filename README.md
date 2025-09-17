@@ -82,7 +82,7 @@ It integrates **airfoil aerodynamic data**, **finite wing corrections**, **Schre
    ```bash
    git clone https://github.com/<your-username>/Wing_Aero_Structural_Model.git
    cd Wing_Aero_Structural_Model
-````
+
 
 2. Open MATLAB and ensure this folder is added to your MATLAB path.
 
