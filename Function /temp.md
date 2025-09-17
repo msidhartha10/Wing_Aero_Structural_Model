@@ -167,7 +167,7 @@ And plenty of optional plots (commented in the script).
 
 ---
 
-### **README.md – Suggested Description**
+### **NOTE-**
 
 This MATLAB project models the aerodynamic and structural behavior of a finite wing using classical methods. Starting from 2D airfoil data, it applies finite-wing corrections, estimates lift distributions (Schrenk’s method), calculates shear and bending diagrams, evaluates structural deflection, and predicts aircraft performance (range and endurance) using Breguet equations. The workflow is modular, with each step implemented as a separate function, making it easy to adapt for different wing geometries, materials, or flight conditions.
 
