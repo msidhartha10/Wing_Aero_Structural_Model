@@ -43,14 +43,23 @@ Execute `Function/Main_Code.m`. The script will:
 * Deflected shape, tip deflection, and slope
 * Breguet range and endurance
   
-#### Sample Plots
+## Sample Plots
+
 Below are representative outputs from the model:
 
-![Lift Curve](img/cl_3d_16.png)
-![Drag Curve](img/cd_3d_16.png)
-![Lift Distribution](img/schrenk_lift_dist.png)
-![Lift Distribution Sectional](img/schrenk_lift_dist_sectional.png)
-![Pressure Distribution](img/schrenk_pressure_dist_sectional.png)
+### Aerodynamic Results
+![Lift Curve (2D vs 3D)](img/cl_3d_16.png)  
+![Drag Curve (2D vs 3D)](img/cd_3d_16.png)
+
+### Spanwise Distributions
+![Spanwise Lift Distribution](img/schrenk_lift_dist.png)  
+![Sectional Lift Distribution](img/schrenk_lift_dist_sectional.png)  
+![Sectional Pressure Distribution](img/schrenk_pressure_dist_sectional.png)
+
+### Structural Analysis
+![Deflection Shape](img/def.png)  
+![SFD & BMD Diagram (End Loads)](img/SFD%20&%20BMD%20Diagram%20(at%20end).jpg)  
+![SFD & BMD Diagram (Point Loads)](img/SFD%20&%20BMD%20Diagram%20with%20point%20loads.jpg)
 
 
 For more details, see [Function/Function\_Explanation.md](Function/Function_Explanation.md).
