@@ -48,19 +48,18 @@ Execute `Function/Main_Code.m`. The script will:
 Below are representative outputs from the model:
 
 ### Aerodynamic Results
-![Lift Curve (2D vs 3D)](img/cl_3d_16.png)  
-![Drag Curve (2D vs 3D)](img/cd_3d_16.png)
+<img src="img/Cl  3d 16.png" alt="Lift Curve" width="400"/>
+<img src="img/cd 3d 16.png" alt="Drag Curve" width="400"/>
 
 ### Spanwise Distributions
-![Spanwise Lift Distribution](img/schrenk_lift_dist.png)  
-![Sectional Lift Distribution](img/schrenk_lift_dist_sectional.png)  
-![Sectional Pressure Distribution](img/schrenk_pressure_dist_sectional.png)
+<img src="img/schrenk lift dist.png" alt="Spanwise Lift" width="500"/>
+<img src="img/schrenk lift dist sectional.png" alt="Lift Distribution Sectional" width="500"/>
+<img src="img/schrenk pressure dist sectional.png" alt="Pressure Distribution" width="500"/>
 
 ### Structural Analysis
-![Deflection Shape](img/def.png)  
-![SFD & BMD Diagram (End Loads)](img/SFD%20&%20BMD%20Diagram%20(at%20end).jpg)  
-![SFD & BMD Diagram (Point Loads)](img/SFD%20&%20BMD%20Diagram%20with%20point%20loads.jpg)
-
+<img src="img/def.png" alt="Deflection" width="500"/>
+<img src="img/SFD & BMD Diagram (at end).jpg" alt="SFD BMD End" width="500"/>
+<img src="img/SFD & BMD Diagram with point loads.jpg" alt="SFD BMD Point Loads" width="500"/>
 
 For more details, see [Function/Function\_Explanation.md](Function/Function_Explanation.md).
 
