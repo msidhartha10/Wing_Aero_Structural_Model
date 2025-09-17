@@ -54,11 +54,11 @@ Below are representative outputs from the model:
 ### Spanwise Distributions
 <img src="img/schrenk lift dist.png" alt="Spanwise Lift" width="500"/>
 <img src="img/schrenk lift dist sectional.png" alt="Lift Distribution Sectional" width="500"/>
-<img src="img/schrenk pressure dist sectional.png" alt="Pressure Distribution" width="500"/>
+<!-- <img src="img/schrenk pressure dist sectional.png" alt="Pressure Distribution" width="500"/> > -->
 
 ### Structural Analysis
 <img src="img/def.png" alt="Deflection" width="500"/>
-<img src="img/SFD & BMD Diagram (at end).jpg" alt="SFD BMD End" width="500"/>
+<!-- <img src="img/SFD & BMD Diagram (at end).jpg" alt="SFD BMD End" width="500"/> -->
 <img src="img/SFD & BMD Diagram with point loads.jpg" alt="SFD BMD Point Loads" width="500"/>
 
 For more details, see [Function/Function\_Explanation.md](Function/Function_Explanation.md).
