@@ -1,7 +1,7 @@
 # Wing Aero-Structural Model (MATLAB)
 
 A modular MATLAB pipeline for **aerodynamic and structural analysis of finite wings** using classical methods.
-Starting from 2D airfoil data, the model applies finite-wing corrections, estimates spanwise loading, computes shear and bending, predicts deflection, and links results to mission performance via the Breguet range and endurance (propeller aircraft).
+Starting from 2D airfoil data, the model applies finite-wing corrections, estimates spanwise loading, computes shear and bending, predicts deflection and compare with FEA results from Static Structural (Ansys), and links results to mission performance via the Breguet range and endurance (propeller aircraft).
 
 If you are new, begin with the **Quick Start** section.
 
@@ -37,11 +37,21 @@ Execute `Function/Main_Code.m`. The script will:
 
 ### Outputs
 
-* CL/CD and L/D vs. angle of attack
+* 3D Finite Wing CL/CD and L/D vs. angle of attack
 * Spanwise lift and pressure distributions
 * SFD and BMD plots
 * Deflected shape, tip deflection, and slope
 * Breguet range and endurance
+  
+#### Sample Plots
+Below are representative outputs from the model:
+
+![Lift Curve](img/cl_3d_16.png)
+![Drag Curve](img/cd_3d_16.png)
+![Lift Distribution](img/schrenk_lift_dist.png)
+![Lift Distribution Sectional](img/schrenk_lift_dist_sectional.png)
+![Pressure Distribution](img/schrenk_pressure_dist_sectional.png)
+
 
 For more details, see [Function/Function\_Explanation.md](Function/Function_Explanation.md).
 
@@ -94,6 +104,10 @@ Wing_Aero_Structural_Model/
 | `Plots_Aero_coeff`           | Helper for visualizing aerodynamic performance       | Data structures from `aerodynamic_coeff`                                           | Figures: CL–α, CD–CL, L/D–α curves |
 
 ---
+The function [`sec_lift_pressure.m`](Function/sec_lift_pressure.m) generates spanwise sectional lift and pressure distributions section wise produces both numerical tables and visualizations which can be fitted into Static Structural to see the deflection and match with the value from beam deflection theory.
+
+
+--- 
 
 ## Key Equations
 
@@ -122,6 +136,7 @@ $E I(y)\, \frac{d^2 w}{dy^2} = M(y)$
 * Range:
   $R = \frac{\eta_p}{c}\, \frac{L}{D}\, \ln\!\left(\frac{W_i}{W_f}\right)$
 
+
 ---
 
 ## Assumptions & Limitations
@@ -137,9 +152,9 @@ $E I(y)\, \frac{d^2 w}{dy^2} = M(y)$
 
 ## Validation
 
-* Compare CL–α and CD with AVL/XFOIL + lifting-line theory
+* Compare CL–α and CD with AVL/XFOIL + lifting-line theory or Visit [Airfoil Tools](http://airfoiltools.com/search/index)
 * Cross-check root bending moment with hand integration of q(y)
-* Verify tip deflection with closed-form beam theory (uniform load, constant EI)
+* Verify tip deflection with closed-form beam theory (uniform load, constant EI) or Compare with FEA analysis 
 
 ---
 
