@@ -54,7 +54,102 @@ It integrates **airfoil aerodynamic data**, **finite wing corrections**, **Schre
 
 ---
 
-
-
 ## 📂 Repository Structure
+
+```
+
+/Wing\_Aero\_Structural\_Model
+│── main.m                     % Main driver script
+│── Wing\_Parameter\_Calculation.m
+│── aerodynamic\_coeff.m
+│── schrenk\_dist.m
+│── sec\_lift\_pressure.m         % Sectional lift & pressure + plots
+│── over\_the\_section.m          % (optional chordwise breakdown)
+│── SFD\_BMD.m / SFD\_BMD2.m
+│── Deflection.m
+│── Range\_Endurance.m
+│── Plots\_Aero\_coeff.m
+│── Aero\_Coeff\_2D.xlsx          % Input aerodynamic data
+│── README.md
+
+````
+
+---
+
+## 🚀 How to Use
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/<your-username>/Wing_Aero_Structural_Model.git
+   cd Wing_Aero_Structural_Model
+````
+
+2. Open MATLAB and ensure this folder is added to your MATLAB path.
+
+3. Run the main script:
+
+   ```matlab
+   main
+   ```
+
+4. Review outputs:
+
+   * Tables printed in the MATLAB console (3D CL, CD, sectional lift/pressure, shear/moment reactions, deflections)
+   * Plots showing aerodynamic coefficients, spanwise lift distribution, sectional pressure, and structural responses
+   * Range & endurance estimates in console
+
+---
+
+## 📊 Inputs & Outputs
+
+### Inputs
+
+* Atmospheric conditions (density, velocity, viscosity, gravity)
+* Wing geometry (root chord, tip chord, half-span)
+* Airfoil data (from `Aero_Coeff_2D.xlsx`)
+* Discretization (number of spanwise sections)
+* Material properties (E, I for deflection analysis)
+* Aircraft weights (empty, payload, fuel)
+* Propulsive efficiency & SFC
+
+### Outputs
+
+* Aerodynamic performance curves (CL, CD, L/D vs AOA)
+* Section-wise lift/pressure distribution (tables + plots)
+* Shear force and bending moment diagrams
+* Tip deflection and deflection curve
+* Estimated endurance and range (Breguet equations)
+
+---
+
+## 📊 Example Plots
+
+* 3D CL vs AOA with finite wing corrections
+* Spanwise Lift Distribution (planform, elliptical, Schrenk)
+* Spanwise Section Pressure Distribution
+* Shear Force & Bending Moment Diagrams
+* Wing Deflection Curve
+
+---
+
+## ⚙️ Requirements
+
+* MATLAB R2021a or later (older versions may still work)
+* `Aero_Coeff_2D.xlsx` with 2D airfoil aerodynamic coefficients
+
+---
+
+## 📝 Notes
+
+* This tool is designed for **preliminary wing analysis** using analytical and semi-empirical methods.
+* Results are approximations and should not replace **CFD simulations or experimental validation**.
+* The modular function structure makes it easy to adapt for different geometries, airfoils, or materials.
+
+---
+
+## 📌 License
+
+This project is licensed under **Zmotion Autonomous System (ZAS)**.
+All rights reserved. Unauthorized copying or redistribution is prohibited without prior permission from ZAS.
+
 
