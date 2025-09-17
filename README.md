@@ -175,8 +175,19 @@ $E I(y)\, \frac{d^2 w}{dy^2} = M(y)$
 
 ---
 
+
+## Notes
+
+* This tool is designed for **preliminary wing analysis** using analytical and semi-empirical methods.
+* Results are approximations and should not replace **CFD simulations or experimental validation**.
+* The modular function structure makes it easy to adapt for different geometries, airfoils, or materials.
+
+---
+
 ## License & Citation
 
-This project is licensed under the [MIT License](LICENSE).
-If used in reports or projects, please cite this repository.
+*This project is licensed under **Zmotion Autonomous System (ZAS)**.
+*All rights reserved. Unauthorized copying or redistribution is prohibited without prior permission from ZAS.
+
+
 
