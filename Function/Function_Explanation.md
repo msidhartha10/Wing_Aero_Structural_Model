@@ -147,26 +147,6 @@ And plenty of optional plots (commented in the script).
 
 ---
 
-### **Suggested Repo Structure**
-
-```
-/Wing_Aero_Structural_Model
-│── main.m                     % the script you shared
-│── Wing_Parameter_Calculation.m
-│── aerodynamic_coeff.m
-│── schrenk_dist.m
-│── sec_lift_pressure.m
-│── over_the_section.m
-│── SFD_BMD.m / SFD_BMD2.m
-│── Deflection.m
-│── Range_Endurance.m
-│── Aero_Coeff_2D.xlsx          % input data
-│── Plots_Aero_coeff.m          % plotting helper
-│── README.md
-```
-
----
-
 ### **NOTE-**
 
 This MATLAB project models the aerodynamic and structural behavior of a finite wing using classical methods. Starting from 2D airfoil data, it applies finite-wing corrections, estimates lift distributions (Schrenk’s method), calculates shear and bending diagrams, evaluates structural deflection, and predicts aircraft performance (range and endurance) using Breguet equations. The workflow is modular, with each step implemented as a separate function, making it easy to adapt for different wing geometries, materials, or flight conditions.
