@@ -6,7 +6,7 @@ close all;
 
 % Atmospheric Data
 rho = 1.225 ; % ( atmoshpheric denisty in kg/m^3)
-V = 25; % (freestream velocity in m/s)
+V = 20.41273; % (freestream velocity in m/s)
 nu = 1.7894e-05; % (dynamic viscosity in kg / m-s)
 g = 9.81; % gravity
 
@@ -35,7 +35,7 @@ n_sections = 10;
 
 %% 3D CL and CD Calculation
 
-results = aerodynamic_coeff(AeroData,desired_angles,b_half, Tc, Rc,e );
+results = aerodynamic_coeff(AeroData,desired_angles,b_half, Tc, Rc,e, MAC);
 % Aero_Table(results) 
  %Plots_Aero_coeff(results) %  <------ figure
 
@@ -47,12 +47,16 @@ idx = find(AeroResults.AOA_deg == Working_AOA , 1);
 Cl = AeroResults.CL_3D(idx);
 Cd = AeroResults.CD_3D(idx);
 L_D = Cl/Cd;
+Cl_t = q*S*Cl;
+Cd_t = q*S*Cd;
 CD0 = results.Cd0_2D_at_0deg;
 fprintf('3D CL value (Full Wing Span)= %.4f at AOA = %d deg \n\n', Cl, Working_AOA);
 fprintf('Zero-lift angle (alpha_L0) = %.4f deg \n\n', rad2deg(results.alpha_L0));
 fprintf('CD0 = %.4f \n\n', (CD0));
 fprintf('3D CD value (Full Wing Span)= %.4f at AOA = %d deg \n\n', Cd, Working_AOA);
 fprintf('L/D = %.4f \n\n', (L_D));
+fprintf('Therotical Cl = %.4f & CD value  %.4f at AOA = %d deg \n\n',Cl_t, Cd_t, Working_AOA);
+
 %% Function to Calculate Shrenk Lift Ditribution %%%
 
 % Calculte Lift Distribution on Planform , Elliptical, Schrenk and Plot
@@ -88,38 +92,45 @@ pos2 = 0.2 * b_half; % m
 [R,Vi,M,P, root_shear, root_moment,P1,P2,W_points , W_dist] = SFD_BMD3(g,m1,m2,pos1,pos2,y,b_half,L_sch,c_sch,wing_mass);
 fprintf('SFD/BMD results (half-wing) with point loads:\n');
 
-fprintf('   Root reaction R = %.3f N (upwards), M_root = %.3f N*m \n', root_shear, root_moment);
+fprintf('   Root reaction R = %.3f N (upwards), M_root = %.3f N*m \n \n', root_shear, root_moment);
 
-fprintf('  Point loads: P1 = %.2f N at y=%.3f m, P2 = %.2f N at y=%.3f m\n', P1, pos1, P2, pos2);
-fprintf('  Distributed lift (half-wing) = %.3f N (upwards)\n', W_dist);
-fprintf('  Total point loads = %.3f N (downwards)\n', W_points);
+fprintf('  Point loads: P1 = %.2f N at y=%.3f m, P2 = %.2f N at y=%.3f m \n \n', P1, pos1, P2, pos2);
+fprintf('  Distributed lift (half-wing) = %.3f N (upwards)\n \n', W_dist);
+fprintf('  Total point loads = %.3f N (downwards)\n \n', W_points);
 
 
 
 % % Plots_SFD_BMD(y, L_sch,V,P);  %<------ figure
-Plots_SFD_BMD2(y, L_sch,Vi,P, pos1 ,pos2);  %<------ figure
+%Plots_SFD_BMD2(y, L_sch,Vi,P, pos1 ,pos2);  %<------ figure
+
+%% Deflection 
+% Assumes your BMD is in P (N*m) and y is the span vector (m)
+
+% h1_root = 46.19; h2_root = 45.07; b_root = 12;
+% % Tip trapezoid [mm]
+% h1_tip  = 34.95; h2_tip  = 34.07; b_tip  = 12;
 % 
-% %% Deflection 
-% % Assumes your BMD is in P (N*m) and y is the span vector (m)
+% trap_Ix = @(b,h1,h2,h) b*(h^3/(36*(h1+h2)))*(h1^2+4*h1*h2+h2^2);
+% h_root = (h1_root+h2_root)/2; 
+% h_tip  = (h1_tip+h2_tip)/2;
 % 
-% % breath = 1.7; % in m
-% % height = 30/1000;  % in m
-% % thickness = 14/1000 ; % in m 
-% % I = (breath *height^3)/12;
+% I_root = trap_Ix(b_root,h1_root,h2_root,h_root)*1e-12;
+% I_tip  = trap_Ix(b_tip ,h1_tip ,h2_tip ,h_tip )*1e-12;
 % 
-% % using E = 290 GPa (carbon fiber)
-% E = 290.0e+09;     % Pa (290 GPa carbon fiber)
-% I = 1.0e-8;    % moment of inetria 
-% 
-% % % using (PVC FOAM 80KG/M3)
-% % E = 1.02e+08;     % Pa 
-% % I = 1.27e-5;    % moment of inetria
-% 
-% [tip_deflection,w_def,theta] = Deflection(y, P, E, I);
-% %[tip_deflection,w_def,theta] = Deflection2(n_sections,c_sch, y, P, E, I);
-% max_deflection = min(w_def*1000);  % most negative (if sign is negative) in mm
-% % disp(max_deflection);
-% 
+% % Linear taper of I along span
+% I_dist = I_root + (I_tip - I_root).*(y/b_half);
+
+%% Deflection
+E = 290e+09; % Pa (carbon fiber)
+I_dist =2.243176e-08;    % second moment of area
+
+[tip_deflection,w_def,theta,M_bend] = Deflection(y,P,E,I_dist,'M');
+
+fprintf('\n Tip deflection = %.3f mm \n',tip_deflection);
+
+%max_deflection = min(w_def*1000);  % most negative (if sign is negative) in mm
+%disp(max_deflection);
+
 % %% ----- Breguet range & endurance Calculations -----
 % 
 % % Range (prop)  : R = (eta_p * L/D / c) * log(W_i / W_f)
@@ -141,3 +152,4 @@ Plots_SFD_BMD2(y, L_sch,Vi,P, pos1 ,pos2);  %<------ figure
 % [L_D_3_2,W_i, W_f,R_prop,E_prop] = Range_Endurance(rho, S, g, V, W_fuel,CD0, W_empty,W_payload,k,Cl, Cd, L_D,eta_p, c_per_hr, c_per_sec);
 % 
 % save('myData.mat')
+close all;
