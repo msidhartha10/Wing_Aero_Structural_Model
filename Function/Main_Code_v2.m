@@ -1,24 +1,31 @@
-% Wing Aero-Structural Model: Sequential Analysis Script Author:
-% msidhartha10 Repository: Wing_Aero_Structural_Model Description:
-%   This script performs a sequential aero-structural analysis for a finite
-%   wing: 1) Inputs and constants 2) Wing parameter calculation 3) 3D
-%   aerodynamic coefficients from 2D data 4) Schrenk lift distribution 5)
-%   Section-wise lift and pressure 6) Shear force and bending moment
-%   diagrams (SFD/BMD) with point loads 7) Deflection under bending
+% Wing Aero-Structural Model: Sequential Analysis Script
+% Author: msidhartha10
+% Repository: Wing_Aero_Structural_Model (https://github.com/msidhartha10/Wing_Aero_Structural_Model)
+% Description:
+%   This script performs a sequential aero-structural analysis for a finite wing:
+%   1) Inputs and constants
+%   2) Wing parameter calculation
+%   3) 3D aerodynamic coefficients from 2D data
+%   4) Schrenk lift distribution
+%   5) Section-wise lift and pressure
+%   6) Shear force and bending moment diagrams (SFD/BMD) with point loads
+%   7) Deflection under bending
 %   Optional: range and endurance calculations (commented)
 %
 % Dependencies (functions expected in path):
-%   - Wing_Parameter_Calculation - aerodynamic_coeff - schrenk_dist -
-%   sec_lift_pressure (or sec_lift_pressure2) - SFD_BMD3 (or SFD_BMD /
-%   SFD_BMD2) - Deflection
+%   - Wing_Parameter_Calculation
+%   - aerodynamic_coeff
+%   - schrenk_dist
+%   - sec_lift_pressure (or sec_lift_pressure2)
+%   - SFD_BMD3 (or SFD_BMD / SFD_BMD2)
+%   - Deflection
 %
 % Data files:
 %   - Aero_Coeff_2D.xlsx (2D airfoil aerodynamic data vs AoA)
 %
 % Notes:
-%   - Ensure the working angle of attack exists in the angle sweep,
-%   otherwise the nearest AoA is used. - You can override Cl/Cd with known
-%   values (e.g. from CFD) via flags.
+%   - Ensure the working angle of attack exists in the angle sweep, otherwise the nearest AoA is used.
+%   - You can override Cl/Cd with known values (e.g. from CFD) via flags.
 
 clc;
 clear vars;
@@ -233,4 +240,5 @@ if PLOTS
  Plot_deflection(y, M,P,theta, w_def);
 
 end
+
 % End of script
