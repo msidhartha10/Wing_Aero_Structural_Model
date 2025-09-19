@@ -1,7 +1,8 @@
+
 # Wing Aero-Structural Model (MATLAB)
 
 A modular MATLAB pipeline for **aerodynamic and structural analysis of finite wings** using classical methods.
-Starting from 2D airfoil data, the model applies finite-wing corrections, estimates spanwise loading, computes shear and bending, predicts deflection and compare with FEA results from Static Structural (Ansys), and links results to mission performance via the Breguet range and endurance (propeller aircraft).
+Starting from 2D airfoil data, the model applies finite-wing corrections, estimates spanwise loading, computes shear and bending, predicts deflection, compares with FEA results from Static Structural (ANSYS), and links results to mission performance via the Breguet range and endurance (propeller aircraft).
 
 If you are new, begin with the **Quick Start** section.
 
@@ -21,44 +22,54 @@ If you are new, begin with the **Quick Start** section.
 
    * Columns expected: `alpha_deg`, `CL_2D`, `CD_2D` (optional `CM_2D`)
    * Angles in degrees; coefficients dimensionless
-3. Open `Function/Main_Code.m` and adjust the **User Input** block (atmosphere, geometry, AOA sweep, discretization, materials, etc.) to your case.
+3. Open `Function/Main_Code.m` and adjust the **User Input** block (atmosphere, geometry, AoA sweep, discretization, materials, etc.) to your case.
 
 ### Run
 
-Execute `Function/Main_Code.m`. The script will:
+Execute `Function/Main_Code_v2.m`. The script will:
 
 * Compute wing parameters
-* Convert 2D to 3D aerodynamics
+* Convert 2D → 3D aerodynamics
 * Estimate spanwise lift with Schrenk’s method
-* Integrate sectional lift/pressure
-* Build shear force and bending moment diagrams (SFD/BMD)
-* Compute deflection
-* Estimate range and endurance
+* Integrate sectional lift and pressure
+* Build shear force and bending moment diagrams (SFD/BMD) with optional point loads
+* Compute deflection under bending
+* *(Optional)* Estimate range and endurance
 
-### Outputs
+You can control behavior with script flags:
 
-* 3D Finite Wing CL/CD and L/D vs. angle of attack
-* Spanwise lift and pressure distributions
-* SFD and BMD plots
+* `SAVE_DATA` → save results to `.mat`
+* `VERBOSE` → print detailed logs
+* `PLOTS` → show figures
+* `USE_CLCD_OVERRIDE` → replace CL/CD with CFD or test values
+
+---
+
+## Outputs
+
+* 3D finite wing CL, CD and L/D vs angle of attack
+* Spanwise lift and sectional pressure distributions
+* SFD and BMD diagrams
 * Deflected shape, tip deflection, and slope
-* Breguet range and endurance
-  
+* Optional Breguet range and endurance
+
+---
+
 ## Sample Plots
 
-Below are representative outputs from the model:
-
 ### Aerodynamic Results
+
 <img src="img/Cl  3d 16.png" alt="Lift Curve" width="400"/>
 <img src="img/cd 3d 16.png" alt="Drag Curve" width="400"/>
 
 ### Spanwise Distributions
+
 <img src="img/schrenk lift dist.png" alt="Spanwise Lift" width="500"/>
 <img src="img/schrenk lift dist sectional.png" alt="Lift Distribution Sectional" width="500"/>
-<!-- <img src="img/schrenk pressure dist sectional.png" alt="Pressure Distribution" width="500"/> > -->
 
 ### Structural Analysis
+
 <img src="img/def.png" alt="Deflection" width="500"/>
-<!-- <img src="img/SFD & BMD Diagram (at end).jpg" alt="SFD BMD End" width="500"/> -->
 <img src="img/SFD & BMD Diagram with point loads.jpg" alt="SFD BMD Point Loads" width="500"/>
 
 For more details, see [Function/Function\_Explanation.md](Function/Function_Explanation.md).
@@ -68,22 +79,27 @@ For more details, see [Function/Function\_Explanation.md](Function/Function_Expl
 ## Repository Structure
 
 ```
-Wing_Aero_Structural_Model/
-│── Function/
-│   ├── Main_Code.m              % Main driver script
-│   ├── Wing_Parameter_Calculation.m
-│   ├── aerodynamic_coeff.m
-│   ├── schrenk_dist.m
-│   ├── sec_lift_pressure.m
-│   ├── over_the_section.m
-│   ├── SFD_BMD.m / SFD_BMD2.m
-│   ├── Deflection.m
-│   ├── Range_Endurance.m
-│   ├── Plots_Aero_coeff.m
-│   ├── Aero_Coeff_2D.xlsx       % Input airfoil data
-│   └── Function_Explanation.md  % Extended documentation
-│── LICENSE
-│── README.md
+Function/
+│── Main_Code_v2.m                 % Main sequential driver script
+│
+│── Wing_Parameter_Calculation.m
+│── aerodynamic_coeff.m
+│── schrenk_dist.m
+│── sec_lift_pressure.m
+│── over_the_section.m
+│── SFD_BMD3.m                  % Extended SFD/BMD with point loads
+│── Deflection.m
+│── Range_Endurance.m
+│
+│── Plots_Aero_coeff.m
+│── Plots_Lift_Distribution.m
+│── Plot_Sec_lift_press.m
+│── Plots_SFD_BMD2.m
+│── Plot_deflection.m
+│
+│── Aero_Coeff_2D.xlsx          % Input airfoil polar data
+│── Function_Explanation.md     % Extended documentation
+
 ```
 
 ---
@@ -92,58 +108,57 @@ Wing_Aero_Structural_Model/
 
 **Units convention**
 
-- Length: meters (m)  
-- Mass: kilograms (kg)  
-- Force/Weight: newtons (N)  
-- Velocity: m/s  
-- Density: kg/m³  
-- Angle: degrees (unless otherwise noted)  
+* Length: meters (m)
+* Mass: kilograms (kg)
+* Force/Weight: newtons (N)
+* Velocity: m/s
+* Density: kg/m³
+* Angle: degrees (unless otherwise noted)
 
-| Function                     | Purpose / Description                                | Key Inputs (units)                                                                 | Key Outputs (units)                                      |
-| ---------------------------- | --------------------------------------------------- | ---------------------------------------------------------------------------------- | -------------------------------------------------------- |
-| `Wing_Parameter_Calculation` | Compute geometry and flow parameters                 | ρ [kg/m³], V∞ [m/s], μ [Pa·s], g [m/s²], c_root [m], c_tip [m], b_half [m]         | Span b [m], Wing area S [m²], Aspect ratio AR [-], Taper λ [-], MAC [m], Reynolds Re [-], Dynamic pressure q∞ [Pa], Oswald factor e [-] |
-| `aerodynamic_coeff`          | Convert 2D polars → finite-wing aerodynamics, drag polar | CL₂D(α), CD₂D(α) (from Excel), AR [-], e [-], α_sweep [deg]                        | 3D lift slope a₃ᴰ [1/rad], Zero-lift α₀L [deg], CL₃ᴰ(α), CD(α) incl. induced, L/D(α) |
-| `schrenk_dist`               | Approximate spanwise lift using Schrenk’s method     | Planform chord c(y), total CL, span b [m]                                          | Chord distributions (planform, elliptical, Schrenk), q_lift(y) [N/m] |
-| `sec_lift_pressure`          | Discretize span and compute sectional lift/pressure  | N_sections [-], q∞ [Pa], c(y) [m], CL(y) or q_lift(y) [N/m]                        | Section lift Lᵢ [N], sectional pressure pᵢ [Pa], y-stations [m] |
-| `over_the_section`           | Pressure distribution along chord/section            | Section geometry, local α [deg], q∞ [Pa]                                           | p(x,y) distribution (absolute/normalized), sectional L/D |
-| `SFD_BMD` / `SFD_BMD2`       | Shear force and bending moment analysis              | Distributed lift q_lift(y) [N/m], point loads (N) at y [m], support locations       | Shear force V(y) [N], Bending moment M(y) [N·m], root shear [N], root moment [N·m] |
-| `Deflection`                 | Beam deflection under bending (Euler–Bernoulli)      | M(y) [N·m], Elastic modulus E [Pa], Moment of inertia I(y) [m⁴], boundary conditions | Deflection w(y) [m], slope θ(y) [rad], tip deflection [m] |
-| `Range_Endurance`            | Breguet endurance and range (prop aircraft)          | ηₚ [-], Specific fuel consumption c [1/s or 1/hr], L/D [-], Weight ratio Wᵢ/Wf [-] | Endurance E [s or hr], Range R [m or km] |
-| `Plots_Aero_coeff`           | Helper for visualizing aerodynamic performance       | Data structures from `aerodynamic_coeff`                                           | Figures: CL–α, CD–CL, L/D–α curves |
+| Function                            | Purpose / Description                                    | Key Inputs (units)                                                                     | Key Outputs (units)                                                                                                                             |
+| ----------------------------------- | -------------------------------------------------------- | -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Wing_Parameter_Calculation`        | Compute geometry and flow parameters                     | ρ \[kg/m³], V∞ \[m/s], μ \[Pa·s], g \[m/s²], c\_root \[m], c\_tip \[m], b\_half \[m]   | Span b \[m], Wing area S \[m²], Aspect ratio AR \[-], Taper λ \[-], MAC \[m], Reynolds Re \[-], Dynamic pressure q∞ \[Pa], Oswald factor e \[-] |
+| `aerodynamic_coeff`                 | Convert 2D polars → finite-wing aerodynamics, drag polar | CL₂D(α), CD₂D(α) (from Excel), AR \[-], e \[-], α\_sweep \[deg]                        | 3D lift slope a₃ᴰ \[1/rad], Zero-lift α₀L \[deg], CL₃ᴰ(α), CD(α), L/D(α)                                                                        |
+| `schrenk_dist`                      | Approximate spanwise lift using Schrenk’s method         | Planform chord c(y), total CL, span b \[m]                                             | Chord distributions (planform, elliptical, Schrenk), q\_lift(y) \[N/m]                                                                          |
+| `sec_lift_pressure`                 | Discretize span and compute sectional lift/pressure      | N\_sections \[-], q∞ \[Pa], c(y) \[m], CL(y) or q\_lift(y) \[N/m]                      | Section lift Lᵢ \[N], sectional pressure pᵢ \[Pa], y-stations \[m]                                                                              |
+| `over_the_section`                  | Pressure distribution along chord/section                | Section geometry, local α \[deg], q∞ \[Pa]                                             | p(x,y) distribution, sectional L/D                                                                                                              |
+| `SFD_BMD` / `SFD_BMD2` / `SFD_BMD3` | Shear force and bending moment analysis                  | Distributed lift q\_lift(y) \[N/m], point loads (N) at y \[m], support locations       | Shear force V(y) \[N], Bending moment M(y) \[N·m], root shear \[N], root moment \[N·m]                                                          |
+| `Deflection`                        | Beam deflection under bending (Euler–Bernoulli)          | M(y) \[N·m], Elastic modulus E \[Pa], Moment of inertia I(y) \[m⁴]                     | Deflection w(y) \[m], slope θ(y) \[rad], tip deflection \[m]                                                                                    |
+| `Range_Endurance`                   | Breguet endurance and range (prop aircraft)              | ηₚ \[-], Specific fuel consumption c \[1/s or 1/hr], L/D \[-], Weight ratio Wᵢ/Wf \[-] | Endurance E \[s or hr], Range R \[m or km]                                                                                                      |
+| `Plots_Aero_coeff`                  | Helper for visualizing aerodynamic performance           | Data structures from `aerodynamic_coeff`                                               | Figures: CL–α, CD–CL, L/D–α curves                                                                                                              |
 
 ---
-The function [`sec_lift_pressure.m`](Function/sec_lift_pressure.m) generates spanwise sectional lift and pressure distributions section wise produces both numerical tables and visualizations which can be fitted into Static Structural to see the deflection and match with the value from beam deflection theory.
 
+The function [`sec_lift_pressure.m`](Function/sec_lift_pressure.m) generates spanwise sectional lift and pressure distributions, producing both numerical tables and plots. These can be used directly in Static Structural to compare analytical deflection with beam theory or FEA results.
 
---- 
+---
 
 ## Key Equations
 
 **Finite-wing lift slope**
-$a_{3D} = \frac{a_{2D}}{1 + \dfrac{a_{2D}}{\pi e\, AR}}$
+\$a\_{3D} = \dfrac{a\_{2D}}{1 + \tfrac{a\_{2D}}{\pi e, AR}}\$
 
 **Induced drag**
-$C_{D,i} = \frac{C_L^2}{\pi e\, AR}$
+\$C\_{D,i} = \dfrac{C\_L^2}{\pi e, AR}\$
 
 **Total drag polar**
-$C_D \approx C_{D0} + \frac{1}{\pi e AR} C_L^2$
+\$C\_D \approx C\_{D0} + \dfrac{1}{\pi e AR} C\_L^2\$
 
 **Schrenk’s method**
-$q_{\text{Schrenk}}(y) \approx \tfrac{1}{2}[q_{\text{planform}}(y) + q_{\text{elliptic}}(y)]$
+\$q\_{\text{Schrenk}}(y) \approx \tfrac{1}{2}\[q\_{\text{planform}}(y) + q\_{\text{elliptic}}(y)]\$
 
 **Shear and bending (Euler–Bernoulli)**
-$\frac{dV}{dy} = -w(y), \quad \frac{dM}{dy} = V(y)$
+\$\dfrac{dV}{dy} = -w(y), \quad \dfrac{dM}{dy} = V(y)\$
 
 **Deflection**
-$E I(y)\, \frac{d^2 w}{dy^2} = M(y)$
+\$E I(y), \dfrac{d^2 w}{dy^2} = M(y)\$
 
 **Breguet (prop aircraft)**
 
 * Endurance:
-  $E = \frac{\eta_p}{c}\, \ln\!\left(\frac{W_i}{W_f}\right)$
+  \$E = \dfrac{\eta\_p}{c}, \ln!\left(\dfrac{W\_i}{W\_f}\right)\$
 * Range:
-  $R = \frac{\eta_p}{c}\, \frac{L}{D}\, \ln\!\left(\frac{W_i}{W_f}\right)$
-
+  \$R = \dfrac{\eta\_p}{c}, \dfrac{L}{D}, \ln!\left(\dfrac{W\_i}{W\_f}\right)\$
 
 ---
 
@@ -160,9 +175,9 @@ $E I(y)\, \frac{d^2 w}{dy^2} = M(y)$
 
 ## Validation
 
-* Compare CL–α and CD with AVL/XFOIL + lifting-line theory or Visit [Airfoil Tools](http://airfoiltools.com/search/index)
-* Cross-check root bending moment with hand integration of q(y)
-* Verify tip deflection with closed-form beam theory (uniform load, constant EI) or Compare with FEA analysis 
+* Compare CL–α and CD with AVL/XFOIL + lifting-line theory or [Airfoil Tools](http://airfoiltools.com/search/index)
+* Cross-check root bending moment with spanwise integration of q(y)
+* Verify tip deflection with closed-form beam theory or compare with FEA (ANSYS Static Structural)
 
 ---
 
@@ -175,7 +190,6 @@ $E I(y)\, \frac{d^2 w}{dy^2} = M(y)$
 
 ---
 
-
 ## Notes
 
 * This tool is designed for **preliminary wing analysis** using analytical and semi-empirical methods.
@@ -186,8 +200,8 @@ $E I(y)\, \frac{d^2 w}{dy^2} = M(y)$
 
 ## License & Citation
 
-*This project is licensed under **Zmotion Autonomous System (ZAS)**.
-*All rights reserved. Unauthorized copying or redistribution is prohibited without prior permission from ZAS.
+*This project is licensed under **Zmotion Autonomous System (ZAS)**.*
+All rights reserved. Unauthorized copying or redistribution is prohibited without prior permission from ZAS.
 
-
+---
 
