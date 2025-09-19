@@ -22,7 +22,7 @@ If you are new, begin with the **Quick Start** section.
 
    * Columns expected: `alpha_deg`, `CL_2D`, `CD_2D` (optional `CM_2D`)
    * Angles in degrees; coefficients dimensionless
-3. Open `Function/Main_Code.m` and adjust the **User Input** block (atmosphere, geometry, AoA sweep, discretization, materials, etc.) to your case.
+3. Open `Function/Main_Code_v2.m` and adjust the **User Input** block (atmosphere, geometry, AoA sweep, discretization, materials, etc.) to your case.
 
 ### Run
 
