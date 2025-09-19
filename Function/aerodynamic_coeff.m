@@ -1,14 +1,14 @@
-function results = aerodynamic_coeff(AeroData,desired_angles,b_half, Tc, Rc,e )
+function results = aerodynamic_coeff(AeroData,desired_angles,b_half, Tc, Rc,e, b,S,S_half,MAC,AR,TR )
 % ------------------ INPUT DATA (unchanged) ------------------
 %AeroData = readtable('Aero_Coeff_2D.xlsx');
 
 AeroData.Properties.VariableNames = {'Alpha','Cl', 'Cd'};
 
-b = 2*b_half ;  % Full - Span (in m) 
-%b = b_half ;  % Half - Span (in m)
-%S = b*(Tc+Rc)/2; % Span Area (in m^2)
-S = b * MAC; 
-AR = b^2/S;
+% b = 2*b_half ;  % Full - Span (in m) 
+% %b = b_half ;  % Half - Span (in m)
+% %S = b*(Tc+Rc)/2; % Span Area (in m^2)
+% S = b*MAC;
+% AR = b^2/S;
 
 %rows_to_use = (T.Alpha>-5) & (T.Alpha<10);
 % or
@@ -105,5 +105,4 @@ end
   
 
 end
-
 

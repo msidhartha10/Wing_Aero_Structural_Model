@@ -46,6 +46,6 @@ P = M - M(end);
 
 %% --- Outputs
 root_shear = Vi(1);
-root_moment = M(1);
+root_moment = P(1);
 
 end

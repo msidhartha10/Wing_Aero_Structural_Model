@@ -5,7 +5,6 @@ function [y, Dy ,c_plan, c_ell, c_sch, L_plan, L_ell, L_sch] = schrenk_dist(b_ha
 % Span - Wise Distributioon 
 y = linspace(0,b_half, 100);
 b = 2*b_half;
-S = 2*S;
 He = 4* S / ( pi * b); % Ellipse Height
 Dy = (2.*y) /b; 
 

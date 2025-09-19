@@ -17,10 +17,9 @@ b_half = 1.7 ; % Half -Span (in m)
 
 AeroData = readtable('Aero_Coeff_2D.xlsx');
 %desired_angles = [-4 ,-3, -2, -1 , 0 , 1, 2, 3, 4,5,6, 7,8, 9,10, 11, 12];
-desired_angles = -4:0.5:10;
+desired_angles = -4:0.5:6;
 
-% Cl = 0.7; %(Assumed for Clark Y at AOA: 5)
-% OR
+
 Working_AOA = 5; %deg AOA where to get 3D Cl values
 
 n_sections = 10;
@@ -40,22 +39,26 @@ results = aerodynamic_coeff(AeroData,desired_angles,b_half, Tc, Rc,e, MAC);
  %Plots_Aero_coeff(results) %  <------ figure
 
 AeroResults = table(results.AOA_deg(:), results.CL_3D_dynamic(:), results.CD_3D(:), 'VariableNames',{'AOA_deg','CL_3D', 'CD_3D'});
-disp(AeroResults);
+%disp(AeroResults);
 
 idx = find(AeroResults.AOA_deg == Working_AOA , 1);
 % Extract 3D Cl value
 Cl = AeroResults.CL_3D(idx);
 Cd = AeroResults.CD_3D(idx);
+% OR
+%Cl = 0.50713; %(Assumed for Clark Y at AOA: 2.5, CFD)
+
 L_D = Cl/Cd;
-Cl_t = q*S*Cl;
-Cd_t = q*S*Cd;
+L_t = q*S*Cl;
+D_t = q*S*Cd;
 CD0 = results.Cd0_2D_at_0deg;
-fprintf('3D CL value (Full Wing Span)= %.4f at AOA = %d deg \n\n', Cl, Working_AOA);
+
 fprintf('Zero-lift angle (alpha_L0) = %.4f deg \n\n', rad2deg(results.alpha_L0));
 fprintf('CD0 = %.4f \n\n', (CD0));
-fprintf('3D CD value (Full Wing Span)= %.4f at AOA = %d deg \n\n', Cd, Working_AOA);
+fprintf('3D CL value (Full Wing Span)= %.4f at AOA = %.2f deg \n\n', Cl, Working_AOA);
+fprintf('3D CD value (Full Wing Span)= %.4f at AOA = %.2f deg \n\n', Cd, Working_AOA);
 fprintf('L/D = %.4f \n\n', (L_D));
-fprintf('Therotical Cl = %.4f & CD value  %.4f at AOA = %d deg \n\n',Cl_t, Cd_t, Working_AOA);
+fprintf('Therotical Lift = %.4f N & Drag value  %.4f N at AOA = %.2f deg \n\n',L_t, D_t, Working_AOA);
 
 %% Function to Calculate Shrenk Lift Ditribution %%%
 
@@ -79,9 +82,9 @@ disp(T);
 %% Function to calculate SFD & BMD
 
 % masses in kg (downward forces)
-m1 = 5;      % at y1 of half-span
-m2 = 2;      % at y2 of half-span
-wing_mass = 2;   % kg (set per your structure)
+m1 = 0;      % at y1 of half-span
+m2 = 0;      % at y2 of half-span
+wing_mass = 0.0;   % kg (set per your structure)
 
 % positions along half-span (from root)
 pos1 = 0.5 * b_half; % m
@@ -103,9 +106,9 @@ fprintf('  Total point loads = %.3f N (downwards)\n \n', W_points);
 % % Plots_SFD_BMD(y, L_sch,V,P);  %<------ figure
 %Plots_SFD_BMD2(y, L_sch,Vi,P, pos1 ,pos2);  %<------ figure
 
-%% Deflection 
-% Assumes your BMD is in P (N*m) and y is the span vector (m)
-
+% Deflection 
+% % BMD is in P (N*m) and y is the span vector (m)
+% 
 % h1_root = 46.19; h2_root = 45.07; b_root = 12;
 % % Tip trapezoid [mm]
 % h1_tip  = 34.95; h2_tip  = 34.07; b_tip  = 12;
@@ -122,11 +125,11 @@ fprintf('  Total point loads = %.3f N (downwards)\n \n', W_points);
 
 %% Deflection
 E = 290e+09; % Pa (carbon fiber)
-I_dist =2.243176e-08;    % second moment of area
+I_dist = 2.243176e-08;    % second moment of area
 
 [tip_deflection,w_def,theta,M_bend] = Deflection(y,P,E,I_dist,'M');
 
-fprintf('\n Tip deflection = %.3f mm \n',tip_deflection);
+%fprintf('\n Tip deflection = %.3f mm \n',tip_deflection);
 
 %max_deflection = min(w_def*1000);  % most negative (if sign is negative) in mm
 %disp(max_deflection);
